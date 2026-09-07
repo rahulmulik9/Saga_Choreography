@@ -50,4 +50,11 @@ public class ProductService {
         product.setQuantity(product.getQuantity() - quantity);
         return productRepository.save(product);
     }
+
+    @Transactional
+    public Product restoreStock(Long id, int quantity) {
+        Product product = getProductById(id);
+        product.setQuantity(product.getQuantity() + quantity);
+        return productRepository.save(product);
+    }
 }

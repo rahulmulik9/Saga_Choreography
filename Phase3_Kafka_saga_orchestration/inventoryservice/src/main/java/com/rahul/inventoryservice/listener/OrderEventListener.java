@@ -1,9 +1,11 @@
 package com.rahul.inventoryservice.listener;
 
-import com.rahul.inventoryservice.config.KafkaTopicConfig;
+
 import com.rahul.inventoryservice.entity.Product;
+import com.rahul.inventoryservice.event.KafkaTopicConfig;
 import com.rahul.inventoryservice.event.consumerEvent.OrderItemPayload;
 import com.rahul.inventoryservice.event.consumerEvent.OrderPendingEvent;
+import com.rahul.inventoryservice.event.consumerEvent.ReleaseInventoryEvent;
 import com.rahul.inventoryservice.event.producerEvent.InventoryRejectedEvent;
 import com.rahul.inventoryservice.event.producerEvent.InventoryReservedEvent;
 import com.rahul.inventoryservice.exception.InsufficientStockException;
@@ -59,5 +61,14 @@ public class OrderEventListener {
             kafkaTemplate.send(KafkaTopicConfig.INVENTORY_REJECTED,
                     new InventoryRejectedEvent(event.getOrderId(), ex.getMessage()));
         }
+    }
+
+    @KafkaListener(topics = KafkaTopicConfig.RELEASE_INVENTORY, groupId = "inventory-service")
+    @Transactional
+    public void handleReleaseInventory(ReleaseInventoryEvent event) {
+        for (OrderItemPayload line : event.getItems()) {
+            productService.restoreStock(line.getProductId(), line.getQuantity());
+        }
+        log.info("Inventory released for order {}", event.getOrderId());
     }
 }

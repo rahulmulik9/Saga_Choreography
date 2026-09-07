@@ -35,4 +35,5 @@ spring:
       properties:
         spring.json.trusted.packages: "com.rahul.inventoryservice.event"
         spring.json.type.mapping: >-
-          orderPending:com.rahul.inventoryservice.event.consumerEvent.OrderPendingEvent
+          orderPending:com.rahul.inventoryservice.event.consumerEvent.OrderPendingEvent,
+          releaseInventory:com.rahul.inventoryservice.event.consumerEvent.ReleaseInventoryEvent
