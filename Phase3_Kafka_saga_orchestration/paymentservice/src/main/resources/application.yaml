@@ -1,0 +1,38 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: paymentservice
+
+  datasource:
+    url: jdbc:postgresql://localhost:5435/paymentdb
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      properties:
+        spring.json.type.mapping: >-
+          paymentSuccessful:com.rahul.paymentservice.event.producerEvent.PaymentSuccessfulEvent,
+          paymentFailed:com.rahul.paymentservice.event.producerEvent.PaymentFailedEvent
+    consumer:
+      group-id: payment-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.rahul.paymentservice.event"
+        spring.json.type.mapping: >-
+          paymentRequested:com.rahul.paymentservice.event.consumerEvent.PaymentRequestedEvent
