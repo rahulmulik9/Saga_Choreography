@@ -24,9 +24,19 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      properties:
+        spring.json.type.mapping: >-
+          orderPending:com.rahul.orderservice.event.producerEvent.OrderPendingEvent,
+          paymentRequested:com.rahul.orderservice.event.producerEvent.PaymentRequestedEvent,
+          releaseInventory:com.rahul.orderservice.event.producerEvent.ReleaseInventoryEvent
     consumer:
       group-id: order-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
       properties:
         spring.json.trusted.packages: "com.rahul.orderservice.event"
+        spring.json.type.mapping: >-
+          inventoryReserved:com.rahul.orderservice.event.consumerEvent.InventoryReservedEvent,
+          inventoryRejected:com.rahul.orderservice.event.consumerEvent.InventoryRejectedEvent,
+          paymentSuccessful:com.rahul.orderservice.event.consumerEvent.PaymentSuccessfulEvent,
+          paymentFailed:com.rahul.orderservice.event.consumerEvent.PaymentFailedEvent

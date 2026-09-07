@@ -24,9 +24,15 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      properties:
+        spring.json.type.mapping: >-
+          inventoryReserved:com.rahul.inventoryservice.event.producerEvent.InventoryReservedEvent,
+          inventoryRejected:com.rahul.inventoryservice.event.producerEvent.InventoryRejectedEvent
     consumer:
       group-id: inventory-service
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
       properties:
         spring.json.trusted.packages: "com.rahul.inventoryservice.event"
+        spring.json.type.mapping: >-
+          orderPending:com.rahul.inventoryservice.event.consumerEvent.OrderPendingEvent
